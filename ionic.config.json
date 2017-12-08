@@ -1,0 +1,8 @@
+{
+  "name": "TuteApps",
+  "app_id": "6a46e989",
+  "type": "ionic-angular",
+  "integrations": {
+    "cordova": {}
+  }
+}
