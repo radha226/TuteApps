@@ -7,6 +7,9 @@
 	  selector: 'page-home',
 	})
 	export class HomePage {
+		name:any;
+		age:any;
+		city:any;
 
 	  constructor(public navCtrl: NavController, public loadingctrl:LoadingController , private modalctrl:ModalController) {
 
@@ -18,7 +21,7 @@
 	  	laoder.present();
 	  }
 	  modelopen(){
-	  	let ModelData={name:'contactpage'};
+	  	let ModelData=[this.name ='contactpaged44444',this.age=333,this.city='amritsar'];
 	  	let model=this.modalctrl.create(ContactUsPage , {ModelData});
 	  	model.present();
 	  }

@@ -14,10 +14,12 @@
   </ion-navbar>
 
 </ion-header>
-
-
 <ion-content padding >
-
+	<ion-list *ngFor="let modaldatas of modaldata">
 	
+	<ion-item>{{modaldatas}}</ion-item>
+	</ion-list>
+
+
 
 </ion-content>
