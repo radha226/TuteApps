@@ -15,11 +15,30 @@
 
 </ion-header>
 <ion-content padding >
-	<ion-list *ngFor="let modaldatas of modaldata">
+
+	<!--for array-->
+	<!-- <ion-list *ngFor="let modaldatas of modaldata">
 	
 	<ion-item>{{modaldatas}}</ion-item>
+	</ion-list> -->
+
+	<!--for object-->
+	<ion-list>
+		<ion-item>{{modaldata.age}}</ion-item>
+		<ion-item>{{modaldata.city}}</ion-item>
+		<ion-item>{{modaldata.name}}</ion-item>
+	</ion-list>
+	<ion-list *ngFor="let page of modaldata.pages">
+		<ion-item style="color:red">
+			{{page.text}}
+		</ion-item>
+		<ion-item style="color:blue">{{page.desc}}</ion-item>
 	</ion-list>
 
+	<!--for product-->
+	<ion-list *ngFor="let product of modaldata.product">		
+		<ion-item style="color:blue">{{product[i]}}</ion-item>
+	</ion-list>
 
 
 </ion-content>
