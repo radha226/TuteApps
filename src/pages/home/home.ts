@@ -18,8 +18,19 @@
 		productdesc:any;
 
 	  constructor(public navCtrl: NavController, public loadingctrl:LoadingController , private modalctrl:ModalController) {
-
+	  	this.homedata();
 	  }
+
+	   homedata(){
+	   	let data;
+	   	let text;
+	   	let hh;
+	  	let array= [data='homepage',text='text data'];
+	  let mm = array[1]
+	  	console.log(mm);
+	  }
+
+
 	  loader(){
 	  	let laoder=this.loadingctrl.create({
 	  		content:'loading......'
@@ -36,6 +47,7 @@
 						]  // array of object with length 3
 
 	  	};
+	  	
 	  	let model=this.modalctrl.create(ContactUsPage , {ModelData});
 	  	model.present();
 	  }
