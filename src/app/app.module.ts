@@ -9,6 +9,7 @@ import {ContactUsPage} from '../pages/contact-us/contact-us'
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { DatabaseProvider } from '../providers/database/database';
+import { SQLite, SQLiteObject } from '@ionic-native/sqlite';
 
 @NgModule({
   declarations: [

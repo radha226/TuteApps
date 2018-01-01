@@ -19,6 +19,7 @@
 		productdesc:any;
 
 	constructor(public navCtrl: NavController, public loadingctrl:LoadingController , private modalctrl:ModalController,public dbprovider:DatabaseProvider) {
+	this.provider();
 	}
 	modelopen(){
 		let ModelData= {name:'contactpage',age:'333',city:'amritsar',
@@ -31,7 +32,7 @@
 		model.present();
 	}
 	provider(){
-		this.dbprovider.connection();
+	this.dbprovider.connection();
 		
 	}
 }
