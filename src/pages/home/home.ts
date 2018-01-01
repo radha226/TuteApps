@@ -1,6 +1,7 @@
 	import { Component } from '@angular/core';
 	import { NavController,LoadingController , ModalController } from 'ionic-angular';
 	import  {ContactUsPage} from '../contact-us/contact-us';
+	import { DatabaseProvider } from '../../providers/database/database';
 
 	@Component({
 	  templateUrl: 'home.html',
@@ -17,7 +18,7 @@
 		productname:any;
 		productdesc:any;
 
-	constructor(public navCtrl: NavController, public loadingctrl:LoadingController , private modalctrl:ModalController) {
+	constructor(public navCtrl: NavController, public loadingctrl:LoadingController , private modalctrl:ModalController,public dbprovider:DatabaseProvider) {
 	}
 	modelopen(){
 		let ModelData= {name:'contactpage',age:'333',city:'amritsar',
@@ -30,6 +31,7 @@
 		model.present();
 	}
 	provider(){
-		console.log('provider');
+		this.dbprovider.connection();
+		
 	}
 }
