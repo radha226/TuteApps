@@ -48,26 +48,50 @@ Apidata:any;
 			}
 		}
 	}
-	Create(){
-		this.query="CREATE TABLE IF NOT EXISTS LOGS (id unique, log)";
-		this.ExecuteRun(this.query, []);
+	// Create(){
+	// 	this.query="CREATE TABLE IF NOT EXISTS LOGS (id unique, log)";
+	// 	this.ExecuteRun(this.query, []);
+	// }
+	// insert(){
+	// 	this.Create();
+	// 	this.query='INSERT INTO LOGS (id, log) VALUES (2, "logmsg")';
+	// 	this.ExecuteRun(this.query,[]);
+	// }
+	// select(){
+	// 	let data;
+	// 	this.query='Select * from LOGS';
+	// 	data=this.ExecuteRun(this.query,[]);
+	// }
+	createTable(){
+		let columns=[];
+		let tableName:any;;
+		this.load().then((result:any)=>{
+			//for( let app in result){
+				
+				if("app_products" in result){
+					tableName="app_products";
+					for(let app_keys in result.app_products[0]){
+						columns.push(app_keys+' TEXT');
+					}
+					this.query='CREATE TABLE IF NOT EXISTS '+tableName+'('+columns.join(",")+')';
+					this.ExecuteRun(this.query, [])
+				
+				if( "app_pages" in result){
+					tableName="app_pages";
+					for(let app_keys in result.app_pages[0]){
+						columns.push(app_keys+' TEXT');
+					}
+					this.query='CREATE TABLE IF NOT EXISTS '+tableName+'('+columns.join(",")+')';
+					this.ExecuteRun(this.query, []);
+				}}
+				
+		})
 	}
-	insert(){
-		this.Create();
-		this.query='INSERT INTO LOGS (id, log) VALUES (2, "logmsg")';
-		this.ExecuteRun(this.query,[]);
-	}
-	select(){
-		let data;
-		this.query='Select * from LOGS';
-		data=this.ExecuteRun(this.query,[]);
-	}
-
 	load(){
 		return new Promise ((resolve,reject)=>{
 			console.log('load');
 			this.http.get('http://aione.oxosolutions.com/api/android/').subscribe(data=>{
-				this.Apidata=data.json();
+				this.Apidata=data.json().data;
 				resolve(this.Apidata);
 				
 			},error=>{

@@ -28,20 +28,9 @@
 
 	
 	}
-	modelopen(){
-		let ModelData= {name:'contactpage',age:'333',city:'amritsar',
-		pages:     [{text: 'aboutpage', desc: 'this is about page'}, {text: 'contact page', desc: 'this is contact page'}],
-		product:   [this.productname='mobile',
-		this.productdesc='this is mobile product',
-		]  // array of object with length 3
-		};
-		let model=this.modalctrl.create(ContactUsPage , {ModelData});
-		model.present();
-	}
+	
 	provider(){
-
-	this.dbprovider.insert();
-		
+	//this.dbprovider.insert();		
 	}
 	ionViewDidLoad(){
 		console.log('indeax file');

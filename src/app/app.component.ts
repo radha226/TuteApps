@@ -35,6 +35,7 @@ export class MyApp {
       this.statusBar.styleDefault();
       this.splashScreen.hide();
       this.Db=this.dbprovider.connection();
+      this.dbprovider.createTable();
     });
   }
 
