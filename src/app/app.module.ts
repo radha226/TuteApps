@@ -35,7 +35,7 @@ import { SQLite, SQLiteObject } from '@ionic-native/sqlite';
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     DatabaseProvider,
-
+    SQLite
   ]
 })
 export class AppModule {}

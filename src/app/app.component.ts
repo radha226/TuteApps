@@ -6,18 +6,19 @@ import  {ContactUsPage} from '../pages/contact-us/contact-us';
 import { HomePage } from '../pages/home/home';
 import { ListPage } from '../pages/list/list';
 import { SQLite, SQLiteObject } from '@ionic-native/sqlite';
+import { DatabaseProvider } from '../providers/database/database';
 
 @Component({
   templateUrl: 'app.html'
 })
 export class MyApp {
   @ViewChild(Nav) nav: Nav;
-
+  Db;
   rootPage: any = HomePage;
 
   pages: Array<{title: string, component: any}>;
 
-  constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen) {
+  constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen,public dbprovider:DatabaseProvider) {
     this.initializeApp();
 
     // used for an example of ngFor and navigation
@@ -33,6 +34,7 @@ export class MyApp {
     this.platform.ready().then(() => {
       this.statusBar.styleDefault();
       this.splashScreen.hide();
+      this.Db=this.dbprovider.connection();
     });
   }
 

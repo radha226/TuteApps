@@ -11,22 +11,71 @@ import { Nav, Platform } from 'ionic-angular';
 */
 @Injectable()
 export class DatabaseProvider {
+public database:any;
+public query:any;
+db:any;
+Apidata:any;
 
-	constructor(public http: Http,  public platfrom:Platform) {
+	constructor(public http: Http,  public platform:Platform, public sqlite:SQLite) {
 		console.log('Hello DatabaseProvider Provider');
 		this.connection();
+
 	}
 	connection(){
-		let data;
-		if(this.platfrom.is('cordova')){
-			// data='cordova with mobile';
-			// return data;
-			console.log('cordova with mobile')
+	
+		if(this.platform.is('cordova')){
+			this.sqlite.create({name:'tuteAppMobile', location:'defautl'}).then(( database: SQLiteObject) => { 
+				this.database = database;
+			});
 		}else{
-			// data='browser';
-			// return data;
-			 console.log('on browser');
+			this.database = (<any> window).openDatabase("tuteAppBrowser", '1', 'my', 1024 * 1024 * 100); 
+			return this.db=this.database;
 		}
 	}
+
+	ExecuteRun(query, []){
+		if(query!=undefined){
+			if(this.platform.is('cordova')){
+				this.database.executeSql(query);
+			}else{
+				this.database.transaction((tx)=>{
+					tx.executeSql(query, [], (result:any)=>{
+						console.log(result);
+					},(error:any)=>{
+						console.error(error);
+					});
+				})
+			}
+		}
+	}
+	Create(){
+		this.query="CREATE TABLE IF NOT EXISTS LOGS (id unique, log)";
+		this.ExecuteRun(this.query, []);
+	}
+	insert(){
+		this.Create();
+		this.query='INSERT INTO LOGS (id, log) VALUES (2, "logmsg")';
+		this.ExecuteRun(this.query,[]);
+	}
+	select(){
+		let data;
+		this.query='Select * from LOGS';
+		data=this.ExecuteRun(this.query,[]);
+	}
+
+	load(){
+		return new Promise ((resolve,reject)=>{
+			console.log('load');
+			this.http.get('http://aione.oxosolutions.com/api/android/').subscribe(data=>{
+				this.Apidata=data.json();
+				resolve(this.Apidata);
+				
+			},error=>{
+				console.error(error);
+			})
+		})
+	}
+
+
 
 }

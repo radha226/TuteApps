@@ -17,9 +17,16 @@
 		product:any;
 		productname:any;
 		productdesc:any;
+		Db;
 
 	constructor(public navCtrl: NavController, public loadingctrl:LoadingController , private modalctrl:ModalController,public dbprovider:DatabaseProvider) {
-	this.provider();
+		this.provider();
+		this.Db=this.dbprovider.connection();
+		this.dbprovider.load().then((result)=>{
+			console.log(result);
+		});
+
+	
 	}
 	modelopen(){
 		let ModelData= {name:'contactpage',age:'333',city:'amritsar',
@@ -32,7 +39,20 @@
 		model.present();
 	}
 	provider(){
-	this.dbprovider.connection();
+
+	this.dbprovider.insert();
 		
+	}
+	ionViewDidLoad(){
+		console.log('indeax file');
+		if(this.Db!=undefined){
+			console.log(this.Db);
+			if(this.Db!=null){
+				console.log('true');
+			}else{
+				console.log('not database')
+			}
+		}
+			
 	}
 }
