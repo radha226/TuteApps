@@ -17,39 +17,19 @@
 		productname:any;
 		productdesc:any;
 
-	  constructor(public navCtrl: NavController, public loadingctrl:LoadingController , private modalctrl:ModalController) {
-	  	this.homedata();
-	  }
-
-	   homedata(){
-	   	let data;
-	   	let text;
-	   	let hh;
-	  	let array= [data='homepage',text='text data'];
-	  let mm = array[1]
-	  	console.log(mm);
-	  }
-
-
-	  loader(){
-	  	let laoder=this.loadingctrl.create({
-	  		content:'loading......'
-	  	})
-	  	laoder.present();
-	  }
-	  modelopen(){
-	  	//let ModelData=[this.name ='contactpaged44444',this.age=333,this.city='amritsar'];
-	  	let ModelData= {name:'contactpage',age:'333',city:'amritsar',
-			pages:     [{text: 'aboutpage', desc: 'this is about page'}, {text: 'contact page', desc: 'this is contact page'}],
-			product:   [this.productname='mobile',
-						this.productdesc='this is mobile product',
-						
-						]  // array of object with length 3
-
-	  	};
-	  	
-	  	let model=this.modalctrl.create(ContactUsPage , {ModelData});
-	  	model.present();
-	  }
-
+	constructor(public navCtrl: NavController, public loadingctrl:LoadingController , private modalctrl:ModalController) {
 	}
+	modelopen(){
+		let ModelData= {name:'contactpage',age:'333',city:'amritsar',
+		pages:     [{text: 'aboutpage', desc: 'this is about page'}, {text: 'contact page', desc: 'this is contact page'}],
+		product:   [this.productname='mobile',
+		this.productdesc='this is mobile product',
+		]  // array of object with length 3
+		};
+		let model=this.modalctrl.create(ContactUsPage , {ModelData});
+		model.present();
+	}
+	provider(){
+		console.log('provider');
+	}
+}
