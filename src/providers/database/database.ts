@@ -1,4 +1,4 @@
-import { Http } from '@angular/http';
+ import { Http } from '@angular/http';
 import { Injectable } from '@angular/core';
 import { HomePage } from '../../pages/home/home';
 import { SQLite, SQLiteObject } from '@ionic-native/sqlite';
@@ -15,6 +15,7 @@ public database:any;
 public query:any;
 db:any;
 Apidata:any;
+slugs = [];
 
 	constructor(public http: Http,  public platform:Platform, public sqlite:SQLite) {
 		console.log('Hello DatabaseProvider Provider');
@@ -33,63 +34,128 @@ Apidata:any;
 		}
 	}
 
-	ExecuteRun(query, []){
-		if(query!=undefined){
-			if(this.platform.is('cordova')){
-				this.database.executeSql(query);
-			}else{
-				this.database.transaction((tx)=>{
-					tx.executeSql(query, [], (result:any)=>{
-						console.log(result);
-					},(error:any)=>{
-						console.error(error);
-					});
-				})
+	ExecuteRun(query, valesData){
+		return new Promise((resolve,reject)=>{
+			if(query!=undefined){
+				if(this.platform.is('cordova')){
+					this.database.executeSql(query);
+				}else{
+					this.database.transaction((tx)=>{
+						tx.executeSql(query, valesData, (tx,result:any)=>{
+							resolve(result);
+						},(error:any)=>{
+							console.error(error);
+						});
+					})
+				}
 			}
-		}
+		})
 	}
-	// Create(){
-	// 	this.query="CREATE TABLE IF NOT EXISTS LOGS (id unique, log)";
-	// 	this.ExecuteRun(this.query, []);
-	// }
-	// insert(){
-	// 	this.Create();
-	// 	this.query='INSERT INTO LOGS (id, log) VALUES (2, "logmsg")';
-	// 	this.ExecuteRun(this.query,[]);
-	// }
-	// select(){
-	// 	let data;
-	// 	this.query='Select * from LOGS';
-	// 	data=this.ExecuteRun(this.query,[]);
-	// }
+
 	createTable(){
 		let columns=[];
 		let tableName:any;;
 		this.load().then((result:any)=>{
+			this.Apidata=result;
 			//for( let app in result){
-				
-				if("app_products" in result){
-					tableName="app_products";
-					for(let app_keys in result.app_products[0]){
-						columns.push(app_keys+' TEXT');
-					}
-					this.query='CREATE TABLE IF NOT EXISTS '+tableName+'('+columns.join(",")+')';
-					this.ExecuteRun(this.query, [])
-				
-				if( "app_pages" in result){
+				if("app_pages" in result){
+					
 					tableName="app_pages";
 					for(let app_keys in result.app_pages[0]){
 						columns.push(app_keys+' TEXT');
 					}
 					this.query='CREATE TABLE IF NOT EXISTS '+tableName+'('+columns.join(",")+')';
-					this.ExecuteRun(this.query, []);
-				}}
+					this.ExecuteRun(this.query, []).then((result:any)=>{
+						this.insertPages(this.database, this.Apidata,tableName);
+					})
+				}
 				
 		})
 	}
+	insertPages(db,record,tableName){
+		let columns = [];
+	    let values = [];
+	    let slugdata;
+		return new Promise((resolve,reject)=>{
+			if(record != ''){
+               //process columns form record variable
+                for(let tableColumns in record.app_pages[0]){
+                    columns.push("'"+tableColumns+"'");
+                }
+               //process values from record variable
+                if(record.app_pages.length > 0){
+                    if(record.app_pages != undefined){
+                        for(let appData of record.app_pages){
+
+                            let v = [];
+                             let w=[];
+                            for(let keys in appData){
+                                if(record.app_pages != undefined || appData != undefined){
+                                    v.push(appData[keys]);
+                                }
+                            }
+                        values.push(v);
+                            }
+                        //console.log(values);
+                    }
+                }      
+        	}
+        	if(db != undefined){
+        		this.query='SELECT slug FROM '+tableName;
+        		this.ExecuteRun(this.query,[]).then((result1 : any)=>{
+        			if(result1.rows.length > 0){
+        				
+        				for (var i = 0; i <= result1.rows.length ; i++) {
+	                        if(result1.rows[i] != undefined){
+	                            slugdata=this.slugs.push(result1.rows[i].slug);
+	                        }
+                   		}
+                   		if(this.slugs.length > 0){
+                   			console.log('update');
+                    		this.update(values,db,tableName, columns);
+                    	}
+        			}else{
+        				console.log('insert');
+        				this.insertData(values,db,tableName, columns);
+        			}
+        		});
+        	}
+
+		})
+	}
+
+	insertData(values,db, tableName, columns, i = 0){
+	    if(values[i] != undefined){
+	        let questionMarks = [];
+	        for(let j = 0; j< values[i].length; j++){
+	           questionMarks.push('?');
+	        }
+	        this.query = 'INSERT INTO '+tableName+' ( '+columns.join(',')+' ) VALUES ('+questionMarks.join(',')+')';
+	        this.ExecuteRun(this.query, values[i]).then((result)=>{
+	        	this.insertData(values,db,tableName,columns,i = i+1);
+	        });
+	    }
+	}
+	update(values,db, tableName, columns, i = 0){
+	    if(values[i] != undefined){
+	        db.transaction((tx) => {
+	            values[i].push(this.slugs[i]);
+	            let questionMarks = [];
+	            for(let j = 0; j< values[i].length; j++){
+	              questionMarks.push('?');
+	            }  
+	            this.query = 'UPDATE '+tableName+' SET '+columns.join(' = ? ,')+' = ? where slug = ?';
+		        this.ExecuteRun(this.query, values[i]).then((result)=>{
+		        	this.update(values,db, tableName, columns, i = i+1);
+		        });
+	            // tx.executeSql('UPDATE '+tableName+' SET '+columns.join(' = ? ,')+' = ? where slug = ?', values[i] , (result)=>{  
+	            //        this.update(values,db, tableName, columns, i = i+1);
+	            // });
+	        })
+	    }
+	}
 	load(){
 		return new Promise ((resolve,reject)=>{
-			console.log('load');
 			this.http.get('http://aione.oxosolutions.com/api/android/').subscribe(data=>{
 				this.Apidata=data.json().data;
 				resolve(this.Apidata);
