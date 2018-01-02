@@ -23,14 +23,13 @@ dependencies:
 
   post:
     - mkdir www
-    - rm -rf node_modules
+    - npm update
     - ionic cordova platform add android -Y --noresources
 
 test:
   pre:
-    - npm update
-    - npm rebuild node-sass
-
+     - npm rebuild node-sass
+     
   override:
     - chmod +x platforms/android
     - ionic cordova build android -Y
