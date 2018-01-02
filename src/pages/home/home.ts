@@ -38,9 +38,9 @@
 			console.log(this.Db);
 			if(this.Db!=null){
 				console.log('true');
-				this.dbprovider.SelectPages('app_pages').then((result)=>{
-					
-					console.log(result[0].content);
+				this.dbprovider.SelectPages('app_pages').then((result:any)=>{
+
+					console.log(result.rows);
 				})
 			}else{
 				console.log('not database')

@@ -155,18 +155,11 @@ slugs = [];
 
 	    if(this.db!=undefined){
 	        return new Promise((resolve,reject)=>{
-	          //this.ExecuteQuery('Select * from '+tableName);
-	            this.db.transaction((tx)=>{
-
-	                tx.executeSql('Select * from '+tableName, [], (tx,resultPages) =>{ 
-	                  let i=0;
-	                  this.AppkitPages=[];
-	                 // console.log(resultPages.rows);
-	                  resolve(resultPages.rows); 
-	                },(error,er)=>{
-	                    console.log(er);
-	                });
-	            });;
+	        	this.query='Select * from '+tableName;
+	        	this.ExecuteRun(this.query,[]).then((result:any)=>{
+	        		console.log(result.rows);
+	        		resolve(result);
+	        	})
 	        })
 	        
 	    }
