@@ -70,12 +70,73 @@ slugs = [];
 					}
 					this.query='CREATE TABLE IF NOT EXISTS '+tableName+'('+columns.join(",")+')';
 					this.ExecuteRun(this.query, []).then((result:any)=>{
-						this.insertPages(this.database, this.Apidata,tableName);
+						//this.insertPages(this.database, this.Apidata,tableName);
 					})
 				}
+					// if("app_products" in result){
+					// 	tableName="app_products";
+					// 	for(let app_keys in result.app_products[0]){
+	    //             		columnsproduct.push(app_keys+' TEXT');
+	    //         		}
+	    //         		this.query='CREATE TABLE IF NOT EXISTS '+tableName+'('+columnsproduct.join(",")+')';
+	    //         		this.ExecuteRun(this.query, []).then((result:any)=>{
+							
+					// 	});
+	    //         	}
+	     //        	if("app_name" in result){
+		    //         	for(let app_keys in result){
+		    //         		tableName="Meta";
+			   //              if(typeof result[app_keys]!= "object"){
+			   //                  columnMeta.push(app_keys + ' TEXT');
+			   //              }
+			   //          }
+			   //          this.query='CREATE TABLE IF NOT EXISTS '+tableName+'('+columnMeta.join(",")+')';
+		    //         	//this.ExecuteRun(this.query, []).then((data:any)=>{
+						// 	//this.metaQuery(this.database,result,tableName).then((result)=>{
+
+						// 	//})	
+						// //});
+	     //        	}
 				
 		})
 	}
+	// metaQuery(db,record,tableName){
+	// 	console.log(record);
+	// 	let columnMeta=[];
+	//     let values =[];
+	//     let tablekeys;
+	//     return new Promise((resolve,error)=>{
+	//     	if(record != ''){
+	//     		for(let tablekeys in record){
+	// 		        if(typeof record[tablekeys]!= "object"){
+	// 		           columnMeta.push(tablekeys);
+	// 		           values.push(record[tablekeys]);
+	// 		        }
+	// 			}
+	//     		this.query='SELECT  app_domain FROM '+tableName;
+	//     		// this.ExecuteRun(this.query, []).then((result : any)=>{
+	//     		// 	if(result.rows.length > 0){
+	//     		// 		// let meta;
+ //       //   //           		meta=result.rows[0].app_domain;
+	//       //   //             let questionMarks=[];
+	//       //   //             for(let j=0; j < values.length; j++){
+	//       //   //                questionMarks.push("?");
+	//       //   //             }
+	//       //   //             values.push(meta);
+	//       //   //             this.query='UPDATE '+tableName +' SET '+ columnMeta.join('=?, ')+' = ? where app_domain = ?';
+	//       //   //             this.ExecuteRun(this.query, values );
+	//     		// 	}else{
+	//     		// 		// let questionMarks=[];
+	//       //   //             for(let j = 0; j < values.length; j++){
+	//       //   //                 questionMarks.push("?");
+	//       //   //             }
+	//       //   //             this.query='INSERT INTO '+tableName + '(' + columnMeta+ ') VALUES (' +questionMarks + ')';
+	//       //   //             this.ExecuteRun(this.query, values );
+	//     		// 	}
+	//     		// })
+	//     	}
+	// 	 })
+	// }
 	insertPages(db,record,tableName){
 		let columns = [];
 	    let values = [];
