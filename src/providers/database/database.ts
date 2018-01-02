@@ -38,7 +38,11 @@ slugs = [];
 		return new Promise((resolve,reject)=>{
 			if(query!=undefined){
 				if(this.platform.is('cordova')){
-					this.database.executeSql(query);
+					this.database.executeSql(query, valesData, (result:any) =>{
+						resolve(result);
+					},(error:any)=>{
+						console.error(error);
+					});
 				}else{
 					this.database.transaction((tx)=>{
 						tx.executeSql(query, valesData, (tx,result:any)=>{
