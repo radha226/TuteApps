@@ -24,6 +24,7 @@ dependencies:
   post:
     - mkdir www
     - npm update
+    - ionic cordova platform remove android
     - ionic cordova platform add android -Y --noresources
 
 test:
