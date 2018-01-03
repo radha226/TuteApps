@@ -14,7 +14,7 @@ import { DatabaseProvider } from '../providers/database/database';
 export class MyApp {
   @ViewChild(Nav) nav: Nav;
   Db;
-  rootPage: any = HomePage;
+  rootPage:any;
 
   pages: Array<{title: string, component: any}>;
 
@@ -35,7 +35,9 @@ export class MyApp {
       this.statusBar.styleDefault();
       this.splashScreen.hide();
       this.Db=this.dbprovider.connection();
-      this.dbprovider.createTable();
+      this.dbprovider.createTable().then(()=>{
+         this.rootPage = HomePage;
+      });
     });
   }
 

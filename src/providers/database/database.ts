@@ -58,85 +58,136 @@ slugs = [];
 
 	createTable(){
 		let columns=[];
-		let tableName:any;;
+		let columnsproduct=[];
+		let columnMeta=[];
+		let tableName:any;
+		let tableNamepage:any;
+		let tableNamepro;
+		return new Promise((resolve,reject)=>{
 		this.load().then((result:any)=>{
 			this.Apidata=result;
 			//for( let app in result){
-				if("app_pages" in result){
-					
-					tableName="app_pages";
-					for(let app_keys in result.app_pages[0]){
-						columns.push(app_keys+' TEXT');
-					}
-					this.query='CREATE TABLE IF NOT EXISTS '+tableName+'('+columns.join(",")+')';
-					this.ExecuteRun(this.query, []).then((result:any)=>{
-						//this.insertPages(this.database, this.Apidata,tableName);
-					})
-				}
-					// if("app_products" in result){
-					// 	tableName="app_products";
-					// 	for(let app_keys in result.app_products[0]){
-	    //             		columnsproduct.push(app_keys+' TEXT');
-	    //         		}
-	    //         		this.query='CREATE TABLE IF NOT EXISTS '+tableName+'('+columnsproduct.join(",")+')';
-	    //         		this.ExecuteRun(this.query, []).then((result:any)=>{
-							
-					// 	});
-	    //         	}
-	     //        	if("app_name" in result){
-		    //         	for(let app_keys in result){
-		    //         		tableName="Meta";
-			   //              if(typeof result[app_keys]!= "object"){
-			   //                  columnMeta.push(app_keys + ' TEXT');
-			   //              }
-			   //          }
-			   //          this.query='CREATE TABLE IF NOT EXISTS '+tableName+'('+columnMeta.join(",")+')';
-		    //         	//this.ExecuteRun(this.query, []).then((data:any)=>{
-						// 	//this.metaQuery(this.database,result,tableName).then((result)=>{
+				
 
-						// 	//})	
-						// //});
-	     //        	}
+					if("app_pages" in result){
+						console.log('pages');
+						tableNamepage="app_pages";
+						for(let app_keys in result.app_pages[0]){
+							columns.push(app_keys+' TEXT');
+						}
+						this.query='CREATE TABLE IF NOT EXISTS '+tableNamepage+'('+columns.join(",")+')';
+						this.ExecuteRun(this.query, []).then((resultpages:any)=>{
+							this.insertPages(this.database, this.Apidata,tableNamepage).then((result)=>{
+
+							});
+						})
+					}
+					if("app_products" in result){
+						console.log('product');
+						tableNamepro="app_products";
+						for(let app_keys in result.app_products[0]){
+	                		columnsproduct.push(app_keys+' TEXT');
+	            		}
+	            		this.query='CREATE TABLE IF NOT EXISTS '+tableNamepro+'('+columnsproduct.join(",")+')';
+	            		this.ExecuteRun(this.query, []).then((resultproduct:any)=>{
+							this.insertProduct(this.database,result,tableNamepro).then(()=>{
+
+							})
+						});
+	            	}
+	            	if("app_name" in result){
+	            		console.log('meta');
+		            	for(let app_keys in result){
+		            		tableName="Meta";
+			                if(typeof result[app_keys]!= "object"){
+			                    columnMeta.push(app_keys + ' TEXT');
+			                }
+			            }
+			            this.query='CREATE TABLE IF NOT EXISTS '+tableName+'('+columnMeta.join(",")+')';
+		            	this.ExecuteRun(this.query, []).then((data:any)=>{
+							this.metaQuery(this.database,result,tableName).then((result)=>{
+
+							})	
+						});
+	            	}
+	            	resolve('true');
+				
 				
 		})
+		})
 	}
-	// metaQuery(db,record,tableName){
-	// 	console.log(record);
-	// 	let columnMeta=[];
-	//     let values =[];
-	//     let tablekeys;
-	//     return new Promise((resolve,error)=>{
-	//     	if(record != ''){
-	//     		for(let tablekeys in record){
-	// 		        if(typeof record[tablekeys]!= "object"){
-	// 		           columnMeta.push(tablekeys);
-	// 		           values.push(record[tablekeys]);
-	// 		        }
-	// 			}
-	//     		this.query='SELECT  app_domain FROM '+tableName;
-	//     		// this.ExecuteRun(this.query, []).then((result : any)=>{
-	//     		// 	if(result.rows.length > 0){
-	//     		// 		// let meta;
- //       //   //           		meta=result.rows[0].app_domain;
-	//       //   //             let questionMarks=[];
-	//       //   //             for(let j=0; j < values.length; j++){
-	//       //   //                questionMarks.push("?");
-	//       //   //             }
-	//       //   //             values.push(meta);
-	//       //   //             this.query='UPDATE '+tableName +' SET '+ columnMeta.join('=?, ')+' = ? where app_domain = ?';
-	//       //   //             this.ExecuteRun(this.query, values );
-	//     		// 	}else{
-	//     		// 		// let questionMarks=[];
-	//       //   //             for(let j = 0; j < values.length; j++){
-	//       //   //                 questionMarks.push("?");
-	//       //   //             }
-	//       //   //             this.query='INSERT INTO '+tableName + '(' + columnMeta+ ') VALUES (' +questionMarks + ')';
-	//       //   //             this.ExecuteRun(this.query, values );
-	//     		// 	}
-	//     		// })
-	//     	}
-	// 	 })
-	// }
+	insertProduct(db,record,tableName){
+		let columns = [];
+	    let values =[];
+	    let slugdata;
+	    return new Promise((resolve,error)=>{
+	    	if(record!=''){
+	    		for(let tableColumns in record.app_products[0]){
+	           		columns.push(tableColumns)
+	        	}
+	        	for(let productkey of record.app_products){
+		            let v=[];
+		            for(let key in productkey){
+		              let json;
+		                if(key=='product_attributes'){
+		                  json=JSON.stringify(productkey[key]);
+		                }else{
+		                  json=productkey[key];
+		                }
+		               v.push(json);
+		            }//console.log(v);
+	          		values.push(v);
+	        	}
+	    	}
+	    	if(db != undefined){
+	    		this.query='SELECT slug FROM '+tableName;
+	    		this.ExecuteRun(this.query, [] ).then((result1 : any)=>{
+	    			if(result1.rows.length > 0){
+	    				this.update(values,db,tableName, columns);
+	    			}else{
+	    				this.insertData(values,db,tableName, columns);
+	    			}
+	    		})
+	        }
+	    });
+	}
+
+	metaQuery(db,record,tableName){
+		let columnMeta=[];
+	    let values =[];
+	    let tablekeys;
+	    return new Promise((resolve,error)=>{
+	    	if(record != ''){
+	    		for(let tablekeys in record){
+			        if(typeof record[tablekeys]!= "object"){
+			           columnMeta.push(tablekeys);
+			           values.push(record[tablekeys]);
+			        }
+				}
+	    		this.query='SELECT  app_domain FROM '+tableName;
+	    		this.ExecuteRun(this.query, []).then((result : any)=>{
+	    			if(result.rows.length > 0){
+	    				let meta;
+                   		meta=result.rows[0].app_domain;
+	                    let questionMarks=[];
+	                    for(let j=0; j < values.length; j++){
+	                       questionMarks.push("?");
+	                    }
+	                    values.push(meta);
+	                    this.query='UPDATE '+tableName +' SET '+ columnMeta.join('=?, ')+' = ? where app_domain = ?';
+	                    this.ExecuteRun(this.query, values );
+	    			}else{
+	    				let questionMarks=[];
+	                    for(let j = 0; j < values.length; j++){
+	                        questionMarks.push("?");
+	                    }
+	                    this.query='INSERT INTO '+tableName + '(' + columnMeta+ ') VALUES (' +questionMarks + ')';
+	                    this.ExecuteRun(this.query, values );
+	    			}
+	    		})
+	    	}
+		 })
+	}
 	insertPages(db,record,tableName){
 		let columns = [];
 	    let values = [];
@@ -176,11 +227,9 @@ slugs = [];
 	                        }
                    		}
                    		if(this.slugs.length > 0){
-                   			console.log('update');
                     		this.update(values,db,tableName, columns);
                     	}
         			}else{
-        				console.log('insert');
         				this.insertData(values,db,tableName, columns);
         			}
         		});
@@ -216,19 +265,45 @@ slugs = [];
 	        })
 	    }
 	}
-	SelectPages(tableName){
+	// SelectPages(tableName){
 
-	    if(this.db!=undefined){
-	        return new Promise((resolve,reject)=>{
-	        	this.query='Select * from '+tableName;
-	        	this.ExecuteRun(this.query,[]).then((result:any)=>{
-	        		console.log(result.rows);
-	        		resolve(result);
-	        	})
-	        })
+	//     if(this.db!=undefined){
+	//         return new Promise((resolve,reject)=>{
+	//         	this.query='Select * from '+tableName;
+	//         	this.ExecuteRun(this.query,[]).then((result:any)=>{
+	//         		console.log(result.rows);
+	//         		resolve(result.rows);
+	//         	})
+	//         })
 	        
+	//     }
+	// }
+	SelectMeta(tableName){
+		let AppkitMeta;
+	    if(this.db!=null){
+	        return new Promise((resolve,reject)=>{
+	        	console.log('here');
+	           
+	            	console.log('here 1');
+	            	this.query='Select * from '+tableName;
+	               this.ExecuteRun(this.query,[]).then((result:any)=>{
+	                	console.log('here 2');
+	                	console.log(result.rows);
+	                	//resolve(result.rows);
+	                   if(result.rows.length>0){
+	                       for(let i=0; i < result.rows.length; i++){
+	                              AppkitMeta=result.rows[i];
+	                           	console.log(result.rows[i]);
+	                       }
+	                       resolve(AppkitMeta);
+	                   }
+	                });
+
+	           
+	        });
 	    }
 	}
+
 	load(){
 		return new Promise ((resolve,reject)=>{
 			this.http.get('http://aione.oxosolutions.com/api/android/').subscribe(data=>{
